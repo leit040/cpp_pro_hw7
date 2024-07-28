@@ -35,7 +35,13 @@ int main() {
         size_t to = (x == threadCount - 1) ? v.size() : from + chunkSize;
 
         std::cout << "Thread " << x << ": from = " << from << ", to = " << to << "\n";
-        futures.push_back(std::async(std::launch::async, calculation, from, to, std::ref(v)));
+        futures.push_back(std::async(std::launch::async, [from, to, &v](){
+            int result = 0;
+            for (int i = from; i < to; ++i) {
+                result += v[i];
+            }
+            return result;
+        }));
     }
 
     int totalResult = 0;
